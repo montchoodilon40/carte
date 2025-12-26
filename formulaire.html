@@ -1,0 +1,42 @@
+<form id="cardForm">
+  <h2>Crée ta carte festive</h2>
+
+  <input type="text" id="senderName" placeholder="Ton nom" required>
+  <textarea id="message" placeholder="Écris ton message..." rows="4" required></textarea>
+
+  <!-- Bouton WhatsApp -->
+  <button type="button" onclick="sendWhatsApp()">
+    Envoyer via WhatsApp
+  </button>
+</form>
+
+<script>
+function sendWhatsApp() {
+  const name = document.getElementById("senderName").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if (!name || !message) {
+    alert("Veuillez remplir tous les champs");
+    return;
+  }
+
+  // Lien vers la carte animée
+  const cardURL =
+    window.location.origin +
+    "/carte.html?name=" +
+    encodeURIComponent(name) +
+    "&message=" +
+    encodeURIComponent(message);
+
+  const text = encodeURIComponent(
+    "🎉 Je t'envoie une carte festive 🎉\n\n" + cardURL
+  );
+
+  // 🔥 OUVERTURE DIRECTE DE WHATSAPP (OBLIGATOIRE)
+  window.open("https://wa.me/?text=" + text, "_blank");
+
+  // Optionnel : rediriger après
+  // window.location.href = cardURL;
+}
+</script>
+

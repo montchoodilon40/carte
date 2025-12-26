@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte Festive</title>
+<style>
+  body {
+    margin:0; padding:0;
+    background:#0b0c1c;
+    font-family: Arial, sans-serif;
+    color:#fff;
+    overflow:hidden;
+    text-align:center;
+  }
+  h1 {
+    margin-top:50px;
+    font-size:2.5em;
+    text-shadow:0 0 10px #fff;
+  }
+  #senderName, #messageText {
+    font-size:1.5em;
+    margin:20px 0;
+    opacity:0;
+    animation: fadeIn 2s forwards;
+  }
+  @keyframes fadeIn {
+    to { opacity:1; }
+  }
+  .button {
+    padding:15px 30px;
+    margin:20px;
+    font-size:1.2em;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:linear-gradient(45deg, #ff6b6b, #feca57);
+    color:#fff;
+    transition:transform 0.2s;
+    box-shadow:0 0 10px #fff;
+  }
+  .button:hover { transform:scale(1.1); }
+  .music-control {
+    position:fixed; top:20px; right:20px;
+    background: rgba(255,255,255,0.2);
+    border-radius:50%; width:50px; height:50px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:1.5em; box-shadow:0 0 5px #fff;
+  }
+  canvas { position:fixed; top:0; left:0; z-index:-1; }
+</style>
+</head>
+<body>
+
+<h1>🎉 Joyeuses Fêtes ! 🎉</h1>
+<div id="senderName"></div>
+<div id="messageText"></div>
+<button class="button" onclick="goToForm()">Partager avec un(e) ami(e)</button>
+<div class="music-control" onclick="toggleMusic()">🎵</div>
+<audio id="bgMusic" loop>
+  <source src="musique.mp3" type="audio/mpeg">
+</audio>
+<canvas id="fireworks"></canvas>
+
+<script>
+// Récupérer nom et message depuis URL
+const params = new URLSearchParams(window.location.search);
+const name = params.get('name') || 'Quelqu’un';
+const message = params.get('message') || '🎉 Joyeux moment !';
+
+// Affichage animé
+const senderEl = document.getElementById('senderName');
+const messageEl = document.getElementById('messageText');
+senderEl.textContent = `${name} vous souhaite :`;
+messageEl.textContent = message;
+
+// Musique ON/OFF
+const music = document.getElementById('bgMusic');
+let musicPlaying = false;
+function toggleMusic() {
+  if(musicPlaying) music.pause();
+  else music.play();
+  musicPlaying = !musicPlaying;
+}
+
+// Bouton partager (redirige vers formulaire)
+function goToForm() {
+  window.location.href = 'formulaire.html';
+}
+
+// Feux d’artifice améliorés
+const canvas = document.getElementById('fireworks');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
+function random(min,max){ return Math.random()*(max-min)+min; }
+
+function createFirework() {
+  const x = random(100, canvas.width-100);
+  const y = random(50, canvas.height/2);
+  const hue = random(0,360);
+  const count = 40;
+  for(let i=0;i<count;i++){
+    const angle = random(0, Math.PI*2);
+    const speed = random(2,7);
+    particles.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed,
+      alpha:1,
+      hue: hue,
+      decay: random(0.015,0.03),
+      trail: []
+    });
+  }
+}
+
+function animate() {
+  ctx.fillStyle = 'rgba(11,12,28,0.2)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.trail.push({x:p.x, y:p.y});
+    if(p.trail.length>5) p.trail.shift();
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= p.decay;
+    // Dessiner traînées
+    ctx.beginPath();
+    for(let j=0;j<p.trail.length;j++){
+      const t = p.trail[j];
+      ctx.fillStyle = `hsla(${p.hue},100%,50%,${p.alpha*(j/p.trail.length)})`;
+      ctx.arc(t.x,t.y,2,0,Math.PI*2);
+      ctx.fill();
+    }
+    // Dessiner particule
+    ctx.fillStyle = `hsla(${p.hue},100%,50%,${p.alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,3,0,Math.PI*2);
+    ctx.fill();
+    if(p.alpha <=0) particles.splice(i,1);
+  }
+  requestAnimationFrame(animate);
+}
+
+setInterval(createFirework,500);
+animate();
+
+window.addEventListener('resize',()=>{
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
+
