@@ -1,42 +1,56 @@
-<form id="cardForm">
-  <h2>Crée ta carte festive</h2>
+<!-- ===== FORMULAIRE CARTE FESTIVE ===== -->
+<form id="carteForm" onsubmit="event.preventDefault(); partagerWhatsApp();">
 
-  <input type="text" id="senderName" placeholder="Ton nom" required>
-  <textarea id="message" placeholder="Écris ton message..." rows="4" required></textarea>
+  <h2>Créer votre carte 🎉</h2>
 
-  <!-- Bouton WhatsApp -->
-  <button type="button" onclick="sendWhatsApp()">
-    Envoyer via WhatsApp
+  <label for="inputNom">Votre nom</label>
+  <input
+    type="text"
+    id="inputNom"
+    placeholder="Ex : Odilon"
+    required
+  >
+
+  <label for="inputMessage">Votre message</label>
+  <textarea
+    id="inputMessage"
+    placeholder="Ex : Je te souhaite une très bonne fête 🎊"
+    required
+  ></textarea>
+
+  <button type="submit">
+    📲 Partager sur WhatsApp
   </button>
+
 </form>
 
+<!-- ===== SCRIPT WHATSAPP (OBLIGATOIRE) ===== -->
 <script>
-function sendWhatsApp() {
-  const name = document.getElementById("senderName").value.trim();
-  const message = document.getElementById("message").value.trim();
+function partagerWhatsApp() {
+  const nom = document.getElementById("inputNom").value.trim();
+  const message = document.getElementById("inputMessage").value.trim();
 
-  if (!name || !message) {
-    alert("Veuillez remplir tous les champs");
+  if (!nom || !message) {
+    alert("Veuillez remplir le nom et le message 🙂");
     return;
   }
 
-  // Lien vers la carte animée
-  const cardURL =
+  // URL EXACTE de la page GitHub Pages (évite les 404)
+  const urlCarte =
     window.location.origin +
-    "/carte.html?name=" +
-    encodeURIComponent(name) +
-    "&message=" +
-    encodeURIComponent(message);
+    window.location.pathname +
+    "?nom=" + encodeURIComponent(nom) +
+    "&msg=" + encodeURIComponent(message);
 
-  const text = encodeURIComponent(
-    "🎉 Je t'envoie une carte festive 🎉\n\n" + cardURL
-  );
+  const texteWhatsApp =
+    "🎉 Je t’envoie une carte festive personnalisée :\n" +
+    urlCarte;
 
-  // 🔥 OUVERTURE DIRECTE DE WHATSAPP (OBLIGATOIRE)
-  window.open("https://wa.me/?text=" + text, "_blank");
+  const lienWhatsApp =
+    "https://wa.me/?text=" + encodeURIComponent(texteWhatsApp);
 
-  // Optionnel : rediriger après
-  // window.location.href = cardURL;
+  window.open(lienWhatsApp, "_blank");
 }
 </script>
+
 
