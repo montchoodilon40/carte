@@ -1,56 +1,119 @@
-<!-- ===== FORMULAIRE CARTE FESTIVE ===== -->
-<form id="carteForm" onsubmit="event.preventDefault(); partagerWhatsApp();">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer ta carte festive</title>
 
-  <h2>Créer votre carte 🎉</h2>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #0b0c1c;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
 
-  <label for="inputNom">Votre nom</label>
+  form {
+    background: rgba(255,255,255,0.06);
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+  }
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 1em;
+  }
+
+  button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 15px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.6);
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+</style>
+</head>
+<body>
+
+<form>
+  <h2>🎉 Crée ta carte festive</h2>
+
   <input
     type="text"
-    id="inputNom"
-    placeholder="Ex : Odilon"
+    id="senderName"
+    placeholder="Ton nom"
     required
   >
 
-  <label for="inputMessage">Votre message</label>
   <textarea
-    id="inputMessage"
-    placeholder="Ex : Je te souhaite une très bonne fête 🎊"
+    id="message"
+    placeholder="Écris ton message ici…"
+    rows="4"
     required
   ></textarea>
 
-  <button type="submit">
-    📲 Partager sur WhatsApp
+  <!-- IMPORTANT : type=button -->
+  <button type="button" onclick="sendWhatsApp()">
+    📤 Envoyer sur WhatsApp
   </button>
-
 </form>
 
-<!-- ===== SCRIPT WHATSAPP (OBLIGATOIRE) ===== -->
 <script>
-function partagerWhatsApp() {
-  const nom = document.getElementById("inputNom").value.trim();
-  const message = document.getElementById("inputMessage").value.trim();
+function sendWhatsApp() {
+  const name = document.getElementById("senderName").value.trim();
+  const message = document.getElementById("message").value.trim();
 
-  if (!nom || !message) {
-    alert("Veuillez remplir le nom et le message 🙂");
+  if (!name || !message) {
+    alert("Veuillez remplir le nom et le message");
     return;
   }
 
-  // URL EXACTE de la page GitHub Pages (évite les 404)
-  const urlCarte =
+  // 🔥 LIEN VERS LA CARTE ANIMÉE (index.html)
+  const cardURL =
     window.location.origin +
-    window.location.pathname +
-    "?nom=" + encodeURIComponent(nom) +
-    "&msg=" + encodeURIComponent(message);
+    "/index.html?name=" +
+    encodeURIComponent(name) +
+    "&message=" +
+    encodeURIComponent(message);
 
-  const texteWhatsApp =
-    "🎉 Je t’envoie une carte festive personnalisée :\n" +
-    urlCarte;
+  const whatsappText = encodeURIComponent(
+    "🎉 Je t’envoie une carte festive animée 🎉\n\n" +
+    cardURL
+  );
 
-  const lienWhatsApp =
-    "https://wa.me/?text=" + encodeURIComponent(texteWhatsApp);
-
-  window.open(lienWhatsApp, "_blank");
+  // ✅ OUVERTURE DIRECTE DE WHATSAPP (OBLIGATOIRE)
+  window.open(
+    "https://wa.me/?text=" + whatsappText,
+    "_blank"
+  );
 }
 </script>
 
-
+</body>
+</html>
