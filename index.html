@@ -47,6 +47,9 @@
     display:flex; align-items:center; justify-content:center;
     cursor:pointer; font-size:1.5em; box-shadow:0 0 5px #fff;
   }
+  .music{
+    position:fixed; top:3px; right:10px;
+  }
   canvas { position:fixed; top:0; left:0; z-index:-1; }
 </style>
 </head>
@@ -56,7 +59,7 @@
 <div id="senderName"></div>
 <div id="messageText"></div>
 <button class="button" onclick="goToForm()">Partager avec un(e) ami(e)</button>
-<div class="music-control" onclick="toggleMusic()">🎵</div>
+<div class="music-control"  id="musicBtn">🎵</div><br><div class="music">click music</div>
 <audio id="bgMusic" loop>
   <source src="musique.m4a" type="audio/mpeg">
 </audio>
@@ -74,14 +77,23 @@ const messageEl = document.getElementById('messageText');
 senderEl.textContent = `${name} vous souhaite :`;
 messageEl.textContent = message;
 
-// Musique ON/OFF
-const music = document.getElementById('bgMusic');
-let musicPlaying = false;
-function toggleMusic() {
-  if(musicPlaying) music.pause();
-  else music.play();
-  musicPlaying = !musicPlaying;
-}
+const music = document.getElementById("bgMusic");
+const btn = document.getElementById("musicBtn");
+let isPlaying = false;
+// Bouton ON / OFF
+btn.addEventListener("click", function(e) {
+  e.stopPropagation();
+
+  if (isPlaying) {
+    music.pause();
+    btn.textContent = "🔊";
+  } else {
+    music.play();
+    btn.textContent = "🔇";
+  }
+  isPlaying = !isPlaying;
+});
+
 
 // Bouton partager (redirige vers formulaire)
 function goToForm() {
@@ -156,5 +168,4 @@ window.addEventListener('resize',()=>{
 
 </body>
 </html>
-
 
